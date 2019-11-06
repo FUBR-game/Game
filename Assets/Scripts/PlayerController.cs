@@ -1,17 +1,23 @@
-﻿using BeardedManStudios.Forge.Networking.Generated;
+﻿using BeardedManStudios.Forge.Networking;
+using BeardedManStudios.Forge.Networking.Generated;
+using BeardedManStudios.Forge.Networking.Unity;
 using UnityEngine;
 
 [RequireComponent(typeof(CharacterController))]
 [RequireComponent(typeof(PlayerInventory))]
-public class PlayerController : PlayerControllerBehavior
+public class PlayerController : PlayerControllerBehavior, DamageAble
 {
+    public int healt = 1000;
+    public int mana = 1000;
+
+    public GameObject spellSpawnPoint;
+    public Camera playerCamera;
+    
     public float walkSpeed = 5.0f;
     public float sprintSpeed = 10.0f;
     public float gravity = 9.8f;
     public float jumpHeight = 5.0f;
 //    public float airControl = 2.0f;
-
-    public Camera playerCamera;
 
     public float sensitivityX = 15f;
     public float sensitivityY = 15f;
@@ -34,12 +40,15 @@ public class PlayerController : PlayerControllerBehavior
 
     private Quaternion originalRotationPlayer;
     private Quaternion originalRotationCamera;
+    private Quaternion originalRotationSpellSpawnPoint;
 
     void Start()
     {
         controller = GetComponent<CharacterController>();
+        inventory = GetComponent<PlayerInventory>();
         originalRotationPlayer = transform.localRotation;
         originalRotationCamera = playerCamera.transform.localRotation;
+        originalRotationSpellSpawnPoint = spellSpawnPoint.transform.localRotation;
         
     }
 
@@ -68,7 +77,12 @@ public class PlayerController : PlayerControllerBehavior
         {
             Move();
             MouseMove();
-            
+
+            if (Input.GetButtonUp("CastSpell"))
+            {
+                networkObject.SendRpc(RPC_CAST_SPELL, Receivers.All);
+            }
+
             networkObject.position = transform.position;
             networkObject.rotation = transform.rotation;
         }
@@ -121,8 +135,9 @@ public class PlayerController : PlayerControllerBehavior
 
         transform.localRotation = originalRotationPlayer * xQuaternion;
         playerCamera.transform.localRotation = originalRotationCamera * yQuaternion;
+        spellSpawnPoint.transform.localRotation = originalRotationSpellSpawnPoint * yQuaternion;
     }
-
+    
     private static float ClampAngle(float angle, float min, float max)
     {
         if (angle < -360f)
@@ -130,5 +145,34 @@ public class PlayerController : PlayerControllerBehavior
         if (angle > 360f)
             angle -= 360f;
         return Mathf.Clamp(angle, min, max);
+    }
+    
+    private void OnApplicationQuit()
+    {
+        Destroy(gameObject);
+    }
+    
+    //RCPs
+    public override void CastSpell(RpcArgs args)
+    {
+        MainThreadManager.Run(() =>
+        {
+            var spell = inventory.spellBook[inventory.currentSpell];
+
+            var castedSpell = Instantiate(spell.gameObject, spellSpawnPoint.transform.position, Quaternion.identity);
+
+            castedSpell.transform.rotation = spellSpawnPoint.transform.rotation;
+            castedSpell.GetComponent<Rigidbody>().AddForce(spellSpawnPoint.transform.forward * spell.speed);
+        });
+    }
+    
+    public void takeDamage(int amount)
+    {
+        healt -= amount;
+    }
+
+    public void recoverDamage(int amount)
+    {
+        healt += amount;
     }
 }

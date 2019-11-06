@@ -14,6 +14,11 @@ public class GameManager : GameManagerBehavior
         networkProvider = provider.GetComponent<NetworkProvider>();
         
         if(!networkProvider.isServer || networkProvider.debug)
-            NetworkManager.Instance.InstantiatePlayerController(position: new Vector3(0, 5, 0));
+            NetworkManager.Instance.InstantiatePlayerController(position: new Vector3(0, 2, 0));
+    }
+
+    private void spawnPlayer()
+    {
+        
     }
 }

@@ -14,8 +14,6 @@ public class PlayerInventory : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
-        inventory = new List<Item>();
-        spellBook = new List<Spell>();
     }
 
     public void nextSpell()
