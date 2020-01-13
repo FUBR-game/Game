@@ -7,7 +7,7 @@ using UnityEngine;
 [RequireComponent(typeof(PlayerInventory))]
 public class PlayerController : PlayerControllerBehavior, DamageAble
 {
-    public int healt = 1000;
+    public int health = 1000;
     public int mana = 1000;
 
     public GameObject spellSpawnPoint;
@@ -168,11 +168,11 @@ public class PlayerController : PlayerControllerBehavior, DamageAble
     
     public void takeDamage(int amount)
     {
-        healt -= amount;
+        health -= amount;
     }
 
     public void recoverDamage(int amount)
     {
-        healt += amount;
+        health += amount;
     }
 }

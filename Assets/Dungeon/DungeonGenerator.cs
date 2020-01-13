@@ -7,7 +7,7 @@ using UnityEngine;
 public class DungeonGenerator : MonoBehaviour
 {
     [Range(0.0f, 0.25f)] public float maxSplitOffset;
-    [Range(0, 50)] public int splitDepth;
+    [Range(0, 10)] public int splitDepth;
     public int levelWidth;
     public int levelHeight;
 
@@ -21,35 +21,59 @@ public class DungeonGenerator : MonoBehaviour
     public bool buildBlocks;
     public GameObject floorBlock;
     public GameObject wallBlock;
+    [Range(0, 6)] public int maxWallOffset;
+    [Range(0, 1)] public float roomChance = 0.2f;
 
     List<GameObject> splitCubes;
 
+    bool[,,] floorMask;
+
     Assets.BlockGrid grid;
+    LevelSplit[] splits;
 
     void Start()
     {
+        if (generateNewOnPlay) seed = System.Environment.TickCount;
+
         grid = new Assets.BlockGrid(levelWidth, levelHeight, new Vector2((floorBlock.transform.localScale.x * levelWidth), (floorBlock.transform.localScale.z * levelHeight)));
 
-        if (generateNewOnPlay) seed = System.Environment.TickCount;
-        UnityEngine.Random.InitState(seed);
+        splits = SplitLevels(levelWidth, levelHeight, splitDepth, maxSplitOffset, minRoomRatio);
 
-        LevelSplit[] splits = new LevelSplit[] { new LevelSplit { start = new Vector2Int(0, 0), delta = new Vector2Int(levelWidth, levelHeight) } };
-        for (int splitLevel = 1; splitLevel <= splitDepth; splitLevel++)
+        if (visualize)
         {
-            int newSplitNo = splits.Length*2;
+            CreateGrid(splits);
+        }
+
+        if (buildBlocks) {
+            BuildBlocks(splits, 0, floorBlock, wallBlock);
+        }
+    }
+
+    public void BuildLevel(int seed, int zCoord, int width, int height, int numberOfSplits, float maxSplitOffset, float minSplitRatio, GameObject floorBlock, GameObject wallBlock)
+    {
+        UnityEngine.Random.InitState(seed);
+        LevelSplit[] levelSplit = SplitLevels(width, height, numberOfSplits, maxSplitOffset, minSplitRatio);
+    }
+
+    public LevelSplit[] SplitLevels(int width, int height, int numberOfSplits, float maxSplitOffset, float minSplitRatio)
+    {
+        LevelSplit[] splits = new LevelSplit[] { new LevelSplit { start = new Vector2Int(0, 0), delta = new Vector2Int(width, height) } };
+        for (int splitLevel = 1; splitLevel <= numberOfSplits; splitLevel++)
+        {
+            int newSplitNo = splits.Length * 2;
             LevelSplit[] newSplits = new LevelSplit[newSplitNo];
 
             splitCubes = new List<GameObject>();
 
             int currentIndex = 0;
-            foreach(LevelSplit split in splits)
+            foreach (LevelSplit split in splits)
             {
                 bool splitHorizontal = DoISplitHorizontally(split);
                 int splitRange = 0;
                 if (splitHorizontal)
                 {
                     splitRange = Mathf.RoundToInt(split.delta.x * maxSplitOffset);
-                } 
+                }
                 else
                 {
                     splitRange = Mathf.RoundToInt(split.delta.y * maxSplitOffset);
@@ -63,58 +87,135 @@ public class DungeonGenerator : MonoBehaviour
 
             splits = newSplits;
         }
-
-        if (visualize)
-        {
-            CreateGrid(splits);
-        }
-
-        if (buildBlocks) {
-            foreach (LevelSplit split in splits)
-            {
-                int maxHorOffSet = 6;
-                int topOffset = UnityEngine.Random.Range(0, maxHorOffSet);
-                maxHorOffSet =- topOffset;
-                int bottomOffset = UnityEngine.Random.Range(0, maxHorOffSet);
-                int leftOffset = UnityEngine.Random.Range(0, 3);
-                int rightOffset = UnityEngine.Random.Range(0, 3);
-
-                for (int x = 0; x < split.delta.x; x++)
-                {
-                    for (int y = 0; y < split.delta.y; y++)
-                    {
-                        int coordX = split.start.x + x;
-                        int coordY = split.start.y + y;
-
-                        Vector2 gridPos = grid.GridPosToRealPos(new Vector2Int(coordX, coordY));
-                        GameObject cube = Instantiate(wallBlock, transform);
-                        cube.transform.localPosition = new Vector3(gridPos.x, 2, gridPos.y);
-
-                        if (coordX == 0 || coordY == 0 || coordX == levelWidth - 1 || coordY == levelHeight - 1) // edge wall
-                        {
-                            cube.GetComponent<Renderer>().material.SetColor("_Color", new Color(0, 0, 0));
-                            continue;
-                        }
-
-                        if (x <= topOffset || split.delta.x - x <= bottomOffset || y <= leftOffset || split.delta.y - y <= rightOffset) // wall
-                        {
-                            cube.GetComponent<Renderer>().material.SetColor("_Color", new Color(0, 0, 0));
-                        }
-                        else
-                        {
-                            cube.transform.localScale -= new Vector3(0, 7.1f, 0);
-                            cube.transform.position -= new Vector3(0, 7.1f, 0);
-                        }
-                    }
-                }
-            }
-        }
+        return splits;
     }
 
     public struct LevelSplit
     {
         public Vector2Int start;
         public Vector2Int delta;
+    }
+
+    public enum RoomType
+    {
+        Default = 0,
+        Stairs = 1
+    }
+
+    public struct Room
+    {
+        public LevelSplit bounds;
+        public LevelSplit split;
+        public RoomType type;
+    }
+    
+    public struct LevelContents
+    {
+        public Room[] rooms;
+        public LevelSplit[] halls;
+    }
+
+    //public LevelSplit GetOverlap(LevelSplit splitA, LevelSplit splitB)
+    //{
+    //    throw new NotImplementedException();
+    //    Vector2Int minBoundsA;
+    //    Vector2Int maxBoundsA;
+    //    Vector2Int minBoundsB;
+    //    Vector2Int maxBoundsB;
+
+    //    if (splitA.start.x < splitB.start.x || splitA.start.y < splitB.start.y)
+    //    {
+    //        minBoundsA = splitA.start;
+    //        maxBoundsA = splitA.start + splitA.delta;
+    //        minBoundsB = splitB.start;
+    //        maxBoundsB = splitB.start + splitB.delta;
+    //    }
+    //    else
+    //    {
+    //        minBoundsA = splitB.start;
+    //        maxBoundsA = splitB.start + splitB.delta;
+    //        minBoundsB = splitA.start;
+    //        maxBoundsB = splitA.start + splitA.delta;
+    //    }
+
+    //    if (minBoundsB.x >= minBoundsA.x && minBoundsB.x <= maxBoundsA.x ||
+    //        minBoundsB.y >= minBoundsA.y && minBoundsB.y <= maxBoundsA.y)
+    //    {
+
+    //    }
+    //    else
+    //    {
+    //        return null;
+    //    }
+    //}
+
+    //public LevelSplit[] MakeRooms(IEnumerable<LevelSplit> splits, float roomChance, int maxWallOffset)
+    //{
+    //    List<Room> rooms = new List<Room>();
+    //    List<LevelSplit> halls = new List<LevelSplit>();
+
+    //    foreach (LevelSplit split in splits)
+    //    {
+    //        if (UnityEngine.Random.value > roomChance)
+    //        {
+    //            continue;
+    //        }
+
+    //        int maxHorOffSet = maxWallOffset;
+    //        int maxVerOffSet = maxWallOffset;
+    //        int topOffset = UnityEngine.Random.Range(0, maxHorOffSet);
+    //        maxHorOffSet = -topOffset;
+    //        int bottomOffset = UnityEngine.Random.Range(0, maxHorOffSet);
+    //        int leftOffset = UnityEngine.Random.Range(0, maxVerOffSet);
+    //        maxVerOffSet -= leftOffset;
+    //        int rightOffset = UnityEngine.Random.Range(0, maxVerOffSet);
+    //    }
+    //}
+
+    public void BuildBlocks(LevelSplit[] splits, int yCoord, GameObject floorObj, GameObject wallObj)
+    {
+
+        foreach (LevelSplit split in splits)
+        {
+            int maxHorOffSet = maxWallOffset;
+            int maxVerOffSet = maxWallOffset;
+            int topOffset = UnityEngine.Random.Range(0, maxHorOffSet);
+            maxHorOffSet = -topOffset;
+            int bottomOffset = UnityEngine.Random.Range(0, maxHorOffSet);
+            int leftOffset = UnityEngine.Random.Range(0, maxVerOffSet);
+            maxVerOffSet -= leftOffset;
+            int rightOffset = UnityEngine.Random.Range(0, maxVerOffSet);
+
+            for (int x = 0; x < split.delta.x; x++)
+            {
+                for (int y = 0; y < split.delta.y; y++)
+                {
+                    int coordX = split.start.x + x;
+                    int coordY = split.start.y + y;
+
+                    Vector2 gridPos = grid.GridPosToRealPos(new Vector2Int(coordX, coordY));
+                    GameObject cube = Instantiate(wallObj, transform);
+                    cube.transform.localPosition = new Vector3(gridPos.x, 2, gridPos.y);
+
+                    if (coordX == 0 || coordY == 0 || coordX == levelWidth - 1 || coordY == levelHeight - 1) // edge wall
+                    {
+                        cube.GetComponent<Renderer>().material.SetColor("_Color", new Color(255, 0, 0));
+                        continue;
+                    }
+
+                    if (x <= topOffset || split.delta.x - x <= bottomOffset || y <= leftOffset || split.delta.y - y <= rightOffset) // wall
+                    {
+                        cube.GetComponent<Renderer>().material.SetColor("_Color", new Color(0, 0, 0));
+                    }
+
+                    else // floor
+                    {
+                        cube.transform.localScale -= new Vector3(0, 5f, 0);
+                        cube.transform.position -= new Vector3(0, 5f, 0);
+                    }
+                }
+            }
+        }
     }
 
     int GetLevelDepth(int levels)
