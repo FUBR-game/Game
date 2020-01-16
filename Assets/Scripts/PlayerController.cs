@@ -2,13 +2,17 @@
 using BeardedManStudios.Forge.Networking.Generated;
 using BeardedManStudios.Forge.Networking.Unity;
 using UnityEngine;
+using UnityEngine.UI;
 
 [RequireComponent(typeof(CharacterController))]
 [RequireComponent(typeof(PlayerInventory))]
 public class PlayerController : PlayerControllerBehavior, DamageAble
 {
-    public int healt = 1000;
-    public int mana = 1000;
+    public const int maxHealth = 1000;
+    public const int maxMana = 1000;
+
+    public int health = maxHealth;
+    public int mana = maxMana;
 
     public GameObject spellSpawnPoint;
     public Camera playerCamera;
@@ -42,8 +46,16 @@ public class PlayerController : PlayerControllerBehavior, DamageAble
     private Quaternion originalRotationPlayer;
     private Quaternion originalRotationCamera;
     private Quaternion originalRotationSpellSpawnPoint;
-
+    
     private LogHandler _logger;
+    
+    private RectTransform healthBar;
+    private RectTransform healthBarBack;
+    private Text healthText;
+
+    private RectTransform manaBar;
+    private RectTransform manaBarBack;
+    private Text manaText;
     
     void Start()
     {
@@ -53,6 +65,13 @@ public class PlayerController : PlayerControllerBehavior, DamageAble
         originalRotationPlayer = transform.localRotation;
         originalRotationCamera = playerCamera.transform.localRotation;
         originalRotationSpellSpawnPoint = spellSpawnPoint.transform.localRotation;
+        healthBarBack = GameObject.Find("HealthBarBack").GetComponent<RectTransform>();
+        healthBar = healthBarBack.Find("HealthBarFront").GetComponent<RectTransform>();
+        healthText = healthBarBack.Find("HealthBarText").GetComponent<Text>();
+
+        manaBarBack = GameObject.Find("ManaBarBack").GetComponent<RectTransform>();
+        manaBar = manaBarBack.Find("ManaBarFront").GetComponent<RectTransform>();
+        manaText = manaBarBack.Find("ManaBarText").GetComponent<Text>();
     }
 
     protected override void NetworkStart()
@@ -73,7 +92,7 @@ public class PlayerController : PlayerControllerBehavior, DamageAble
         {
             transform.position = networkObject.position;
             transform.rotation = networkObject.rotation;
-            healt = networkObject.healt;
+            health = networkObject.healt;
             return;
         }
 
@@ -94,8 +113,26 @@ public class PlayerController : PlayerControllerBehavior, DamageAble
 
             networkObject.position = transform.position;
             networkObject.rotation = transform.rotation;
-            networkObject.healt = healt;
+            networkObject.healt = health;
         }
+
+        // Health bar
+        healthBar.sizeDelta = new Vector2(Mathf.Lerp(0.0f, healthBarBack.sizeDelta.x, (float)health/maxHealth), healthBarBack.sizeDelta.y);
+        healthText.text = health.ToString();
+
+        // When you die
+        if (health <= 0)
+        {
+            healthText.text = "You're dead!";
+        }
+        else
+        {
+            healthText.text = health.ToString();
+        }
+
+        // Mana bar
+        manaBar.sizeDelta = new Vector2(Mathf.Lerp(0.0f, manaBarBack.sizeDelta.x, (float)mana / maxMana), manaBarBack.sizeDelta.y);
+        manaText.text = mana.ToString();
     }
 
     private void Move()
@@ -188,8 +225,8 @@ public class PlayerController : PlayerControllerBehavior, DamageAble
     {
         if (networkObject.IsOwner)
         {
-            healt -= amount;
-            if (healt <= 0)
+            health -= amount;
+            if (health <= 0)
             {
                 networkObject.SendRpc(RPC_DIE, Receivers.Others);
 
@@ -203,6 +240,6 @@ public class PlayerController : PlayerControllerBehavior, DamageAble
 
     public void recoverDamage(int amount)
     {
-        healt += amount;
+        health += amount;
     }
 }

@@ -19,6 +19,6 @@ public class GameManager : GameManagerBehavior
 
     private void spawnPlayer()
     {
-        
+
     }
 }

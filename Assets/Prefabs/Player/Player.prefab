@@ -60,6 +60,7 @@ MeshRenderer:
   m_MotionVectors: 1
   m_LightProbeUsage: 1
   m_ReflectionProbeUsage: 1
+  m_RayTracingMode: 2
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
@@ -128,7 +129,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: da0af36294327004ab1a0f251a123159, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  healt: 1000
+  health: 1000
   mana: 1000
   spellSpawnPoint: {fileID: 5003567839119429889}
   playerCamera: {fileID: 4208522083153448327}
