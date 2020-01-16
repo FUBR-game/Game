@@ -156,9 +156,12 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   inventorySize: 12
   spellBookSize: 4
-  currentSpell: 0
+  currentSpell: 1
   spellBook:
   - {fileID: 3970534944187685254, guid: afba46b1f5d3b6d42afb3fd3074821e8, type: 3}
+  - {fileID: 2552753990339921457, guid: 39c3dae6d3b421d4d9098ec8ad2f9002, type: 3}
+  - {fileID: 6409665730593724561, guid: 82955ce51bf9603459b5e3a5baffa54b, type: 3}
+  - {fileID: 2639115589763917283, guid: 25ef35d42b3d37647a729a45b49eec9e, type: 3}
 --- !u!1 &4208522083153448325
 GameObject:
   m_ObjectHideFlags: 0

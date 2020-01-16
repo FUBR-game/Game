@@ -13,6 +13,8 @@ public class Spell : MonoBehaviour, Item
 
     private new Rigidbody rigidbody;
 
+    private bool hasWorked = false;
+
     public void Awake()
     {
         rigidbody = GetComponent<Rigidbody>();
@@ -27,18 +29,27 @@ public class Spell : MonoBehaviour, Item
 
     public void OnCollisionEnter(Collision collision)
     {
+        if (hasWorked) return;
+        
+        hasWorked = true;
+        CollisionEffect(collision);
+    }
+
+    protected void CollisionEffect(Collision collision)
+    {
         if (collision.gameObject.GetComponent<DamageAble>() != null)
         {
             collision.gameObject.GetComponent<DamageAble>().takeDamage(damage);
         }
-        
+
         rigidbody.velocity = Vector3.zero;
         rigidbody.angularVelocity = Vector3.zero;
-        
+
         foreach (var particleSystem in particleSystems)
         {
             particleSystem.Stop();
         }
+
         Destroy(gameObject, 0.3f);
     }
 }

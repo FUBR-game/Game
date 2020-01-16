@@ -17,12 +17,17 @@ public class NetworkProvider : MonoBehaviour
     public int maxPlayers = 10;
 
     private NetWorker server;
+    private UDPClient client;
+
+    private LogHandler _logger;
 
     // Start is called before the first frame update
     void Start()
     {
         string[] arguments = Environment.GetCommandLineArgs();
         Rpc.MainThreadRunner = MainThreadManager.Instance;
+
+        _logger = LogHandler.Instance;
 
         if (isServer)
         {
@@ -34,7 +39,7 @@ public class NetworkProvider : MonoBehaviour
         else
             Connect();
     }
-    
+
     void Awake()
     {
         DontDestroyOnLoad(this.gameObject);
@@ -49,8 +54,8 @@ public class NetworkProvider : MonoBehaviour
 
     public void Connect()
     {
-        NetWorker client = new UDPClient();
-        ((UDPClient) client).Connect(ip, port);
+        client = new UDPClient();
+        client.Connect(ip, port);
         Connected(client);
     }
 
@@ -72,11 +77,18 @@ public class NetworkProvider : MonoBehaviour
             mgr = Instantiate(networkManager).GetComponent<NetworkManager>();
 
         mgr.Initialize(netWorker, null, 0);
-        
+
         if (server is IServer)
         {
             SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex + 1);
         }
+    }
+
+    public void Disconnect()
+    {
+        client.Disconnect(true);
+
+        _logger.Log(LogTag.Network, new[] {Time.time.ToString(), "Disconnect server"});
     }
 
     private void OnApplicationQuit()
@@ -84,5 +96,8 @@ public class NetworkProvider : MonoBehaviour
         NetWorker.EndSession();
 
         server?.Disconnect(true);
+
+        if (isServer)
+            _logger.UploadLog("test");
     }
 }
