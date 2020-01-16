@@ -52,7 +52,7 @@ public class PlayerController : PlayerControllerBehavior, DamageAble
     private RectTransform healthBar;
     private RectTransform healthBarBack;
     private Text healthText;
-
+    
     private RectTransform manaBar;
     private RectTransform manaBarBack;
     private Text manaText;
@@ -65,6 +65,7 @@ public class PlayerController : PlayerControllerBehavior, DamageAble
         originalRotationPlayer = transform.localRotation;
         originalRotationCamera = playerCamera.transform.localRotation;
         originalRotationSpellSpawnPoint = spellSpawnPoint.transform.localRotation;
+        
         healthBarBack = GameObject.Find("HealthBarBack").GetComponent<RectTransform>();
         healthBar = healthBarBack.Find("HealthBarFront").GetComponent<RectTransform>();
         healthText = healthBarBack.Find("HealthBarText").GetComponent<Text>();
@@ -116,6 +117,15 @@ public class PlayerController : PlayerControllerBehavior, DamageAble
             networkObject.healt = health;
         }
 
+        // Health bar
+        healthBar.sizeDelta = new Vector2(Mathf.Lerp(0.0f, healthBarBack.sizeDelta.x, (float)health/maxHealth), healthBarBack.sizeDelta.y);
+        healthText.text = health.ToString();
+
+        // When you die
+        if (health <= 0)
+        {
+            healthText.text = "You're dead!";
+        }
         // Health bar
         healthBar.sizeDelta = new Vector2(Mathf.Lerp(0.0f, healthBarBack.sizeDelta.x, (float)health/maxHealth), healthBarBack.sizeDelta.y);
         healthText.text = health.ToString();
