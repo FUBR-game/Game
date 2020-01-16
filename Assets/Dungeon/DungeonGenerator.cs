@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System;
 using UnityEngine;
-
+using Assets.Scripts;
 
 public class DungeonGenerator : MonoBehaviour
 {
@@ -10,6 +10,8 @@ public class DungeonGenerator : MonoBehaviour
     [Range(0, 10)] public int splitDepth;
     public int levelWidth;
     public int levelHeight;
+
+    public List<Loot> loot;
 
     public int seed = 0;
     public bool generateNewOnPlay;
@@ -19,14 +21,15 @@ public class DungeonGenerator : MonoBehaviour
 
     public bool visualize;
     public bool buildBlocks;
+
     public GameObject floorBlock;
-    public GameObject wallBlock;
+    public GameObject destroyableWallBlock;
+    public GameObject invincibleWallBlock;
+
     [Range(0, 6)] public int maxWallOffset;
     [Range(0, 1)] public float roomChance = 0.2f;
 
     List<GameObject> splitCubes;
-
-    bool[,,] floorMask;
 
     Assets.BlockGrid grid;
     LevelSplit[] splits;
@@ -45,7 +48,8 @@ public class DungeonGenerator : MonoBehaviour
         }
 
         if (buildBlocks) {
-            BuildBlocks(splits, 0, floorBlock, wallBlock);
+            BuildBlocks(splits, 0, floorBlock, destroyableWallBlock, invincibleWallBlock);
+            SpawnLoot(splits);
         }
     }
 
@@ -172,7 +176,7 @@ public class DungeonGenerator : MonoBehaviour
     //    }
     //}
 
-    public void BuildBlocks(LevelSplit[] splits, int yCoord, GameObject floorObj, GameObject wallObj)
+    public void BuildBlocks(LevelSplit[] splits, int yCoord, GameObject floorObj, GameObject wallObj, GameObject indestrWallObj)
     {
 
         foreach (LevelSplit split in splits)
@@ -194,26 +198,81 @@ public class DungeonGenerator : MonoBehaviour
                     int coordY = split.start.y + y;
 
                     Vector2 gridPos = grid.GridPosToRealPos(new Vector2Int(coordX, coordY));
-                    GameObject cube = Instantiate(wallObj, transform);
-                    cube.transform.localPosition = new Vector3(gridPos.x, 2, gridPos.y);
+                    GameObject cube;
 
                     if (coordX == 0 || coordY == 0 || coordX == levelWidth - 1 || coordY == levelHeight - 1) // edge wall
                     {
-                        cube.GetComponent<Renderer>().material.SetColor("_Color", new Color(255, 0, 0));
-                        continue;
+                        cube = Instantiate(indestrWallObj, transform);
+                        cube.transform.localPosition = new Vector3(gridPos.x, 2, gridPos.y);
                     }
 
-                    if (x <= topOffset || split.delta.x - x <= bottomOffset || y <= leftOffset || split.delta.y - y <= rightOffset) // wall
+                    else if (x <= topOffset || split.delta.x - x <= bottomOffset || y <= leftOffset || split.delta.y - y <= rightOffset) // wall
                     {
-                        cube.GetComponent<Renderer>().material.SetColor("_Color", new Color(0, 0, 0));
+                        cube = Instantiate(wallObj, transform);
+                        cube.transform.localPosition = new Vector3(gridPos.x, 2, gridPos.y);
                     }
 
-                    else // floor
-                    {
-                        cube.transform.localScale -= new Vector3(0, 5f, 0);
-                        cube.transform.position -= new Vector3(0, 5f, 0);
-                    }
+                    // floor
+                    GameObject floor = Instantiate(floorObj, transform);
+                    floor.transform.localPosition = new Vector3(gridPos.x, -2.0f, gridPos.y);
                 }
+            }
+        }
+    }
+
+    public void SpawnLoot(LevelSplit[] splits)
+    {
+        foreach (LevelSplit split in splits)
+        {
+            var size = (split.delta.x - 2) * (split.delta.y - 2);
+
+            var numLoot = 0;
+
+            var postTaken = new List<Vector2Int>();
+
+            if (size >= 120)
+            {
+                numLoot++;
+            }
+            if (size >= 80)
+            {
+                numLoot++;
+            }
+            if (size >= 50)
+            {
+                numLoot++;
+            }
+            if (size >= 35)
+            {
+                numLoot++;
+            } 
+            if (size >= 20)
+            {
+                numLoot++;
+            }
+            if (size >= 8)
+            {
+                numLoot++;
+            }
+            if (UnityEngine.Random.value > 0.8f)
+            {
+                numLoot++;
+            }
+
+            for(int i = 0; i < numLoot; i++)
+            {
+                retryLoot:
+                var lootX = (int)Mathf.Lerp(1, split.delta.x-1, UnityEngine.Random.value);
+                var lootY = (int)Mathf.Lerp(1, split.delta.y-1, UnityEngine.Random.value);
+                var lootVector = new Vector2Int(lootX, lootY);
+
+                if (!postTaken.Contains(lootVector))
+                {
+                    var lootCoords = grid.GridPosToRealPos(new Vector2Int(split.start.x + lootX, split.start.y + lootY));
+                    var lootObject = Instantiate(loot[0], new Vector3(lootCoords.x, 1, lootCoords.y), new Quaternion());
+                    postTaken.Add(lootVector);
+                }
+                else goto retryLoot;
             }
         }
     }
@@ -280,6 +339,33 @@ public class DungeonGenerator : MonoBehaviour
 
         return splitResult;
     }
+
+    public struct SplitNode
+    {
+        public LevelSplit leftSplit;
+        public LevelSplit rightSplit;
+    }
+
+    //public SplitNode SplitToTree(LevelSplit[] splits)
+    //{
+    //    Queue<SplitNode> splitQueue = new Queue<SplitNode>();
+
+    //    if (splits.Length % 2 == 0)
+    //    {
+    //        // First round, getting splits into nodes
+    //        for (int i = 0; i < splits.Length; i += 2)
+    //        {
+    //            SplitNode node = new SplitNode { leftSplit = splits[i], rightSplit = splits[i + 1] };
+    //            splitQueue.Enqueue(node);
+    //        }
+
+    //        // The rest, turning all the splits into actual trees
+    //    }
+    //    else
+    //    {
+    //        throw new InvalidOperationException("Splits amount must be even.");
+    //    }
+    //}
 
     bool DoISplitHorizontally(LevelSplit split)
     {
