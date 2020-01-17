@@ -244,12 +244,10 @@ public class PlayerController : PlayerControllerBehavior, DamageAble
                 var networkProvider = provider.GetComponent<NetworkProvider>();
                 networkProvider.Disconnect();
                 Application.Quit();
+            } else if (health >= maxHealth)
+            {
+                health = maxHealth;
             }
         }
-    }
-
-    public void recoverDamage(int amount)
-    {
-        health += amount;
     }
 }

@@ -14,9 +14,4 @@ public class TestDamagAble : MonoBehaviour, DamageAble
             Destroy(gameObject);
         }
     }
-
-    public void recoverDamage(int amount)
-    {
-        throw new System.NotImplementedException();
-    }
 }
