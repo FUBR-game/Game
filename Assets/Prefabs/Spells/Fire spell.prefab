@@ -4705,6 +4705,7 @@ ParticleSystemRenderer:
   m_MotionVectors: 1
   m_LightProbeUsage: 0
   m_ReflectionProbeUsage: 0
+  m_RayTracingMode: 0
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
@@ -4762,9 +4763,9 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 3970534944187685249}
-  - component: {fileID: 3970534944187685254}
   - component: {fileID: 5029406003435258435}
   - component: {fileID: 913139439427467911}
+  - component: {fileID: 3970534944187685254}
   m_Layer: 0
   m_Name: Fire spell
   m_TagString: Untagged
@@ -4789,25 +4790,6 @@ Transform:
   m_Father: {fileID: 0}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &3970534944187685254
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 3970534944187685255}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: aaebdf587fc29304eabd70d85d1a205a, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  damage: 1000
-  speed: 800
-  cost: 10
-  lifeTime: 50
-  particleSystems:
-  - {fileID: 3970534944495059352}
-  - {fileID: 4573462122993750227}
 --- !u!54 &5029406003435258435
 Rigidbody:
   m_ObjectHideFlags: 0
@@ -4837,6 +4819,29 @@ SphereCollider:
   serializedVersion: 2
   m_Radius: 0.1
   m_Center: {x: 0, y: 0, z: 0}
+--- !u!114 &3970534944187685254
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3970534944187685255}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: aaebdf587fc29304eabd70d85d1a205a, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  index: 104
+  name: Fire spell
+  hotBarColor: {r: 1, g: 0.2509411, b: 0, a: 0.39215687}
+  damage: 398
+  speed: 929
+  cost: -93
+  timeOut: -930
+  lifeTime: 1000000000
+  particleSystems:
+  - {fileID: 3970534944495059352}
+  - {fileID: 4573462122993750227}
 --- !u!1 &3970534944495059359
 GameObject:
   m_ObjectHideFlags: 0
@@ -9542,6 +9547,7 @@ ParticleSystemRenderer:
   m_MotionVectors: 1
   m_LightProbeUsage: 0
   m_ReflectionProbeUsage: 0
+  m_RayTracingMode: 0
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
@@ -9629,8 +9635,9 @@ Light:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 4344443834544609821}
   m_Enabled: 1
-  serializedVersion: 9
+  serializedVersion: 10
   m_Type: 2
+  m_Shape: 0
   m_Color: {r: 0.9622642, g: 0.34254283, b: 0, a: 1}
   m_Intensity: 1
   m_Range: 10

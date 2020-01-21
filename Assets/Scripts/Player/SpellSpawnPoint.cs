@@ -5,15 +5,16 @@ using UnityEngine;
 
 public class SpellSpawnPoint : SpellSpawnPointBehavior
 {
-    // Start is called before the first frame update
-    void Start()
-    {
-        
-    }
 
     // Update is called once per frame
     void Update()
     {
+        if (!networkObject.IsOwner)
+        {
+            transform.rotation = networkObject.rotation;
+            return;
+        }
         
+        networkObject.rotation = transform.rotation;
     }
 }

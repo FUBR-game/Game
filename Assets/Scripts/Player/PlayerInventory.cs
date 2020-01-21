@@ -1,75 +1,212 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
+using System.IO;
+using System.Xml.Schema;
 using UnityEngine;
+using UnityEngine.UI;
 
 public class PlayerInventory : MonoBehaviour
 {
-    public int inventorySize = 12;
-    public int spellBookSize = 4;
+    public int hotBarSize = 5;
+    public int currentItem = 0;
+    public List<Item> hotBar;
 
-    public int currentSpell;
+    private RectTransform slot1;
+    private RectTransform slot1Border;
 
-    public List<Item> inventory;
-    public List<Spell> spellBook;
+    private RectTransform slot2;
+    private RectTransform slot2Border;
 
-    // Start is called before the first frame update
-    void Start()
+    private RectTransform slot3;
+    private RectTransform slot3Border;
+
+    private RectTransform slot4;
+    private RectTransform slot4Border;
+
+    private RectTransform slot5;
+    private RectTransform slot5Border;
+
+    private RectTransform info;
+    private Text infoText;
+
+    public void Start()
     {
+        slot1 = GameObject.Find("Slot1").GetComponent<RectTransform>();
+        slot1Border = slot1.Find("Slot1Border").GetComponent<RectTransform>();
+
+        slot2 = GameObject.Find("Slot2").GetComponent<RectTransform>();
+        slot2Border = slot2.Find("Slot2Border").GetComponent<RectTransform>();
+
+        slot3 = GameObject.Find("Slot3").GetComponent<RectTransform>();
+        slot3Border = slot3.Find("Slot3Border").GetComponent<RectTransform>();
+
+        slot4 = GameObject.Find("Slot4").GetComponent<RectTransform>();
+        slot4Border = slot4.Find("Slot4Border").GetComponent<RectTransform>();
+
+        slot5 = GameObject.Find("Slot5").GetComponent<RectTransform>();
+        slot5Border = slot5.Find("Slot5Border").GetComponent<RectTransform>();
+
+        info = GameObject.Find("Info").GetComponent<RectTransform>();
+        infoText = info.Find("InfoText").GetComponent<Text>();
         
+        for (var i = 0; i < hotBarSize; i++)
+            hotBar.Add(null);
+        
+        UpdateHotBar();
+        UpdateInfo();
     }
 
     public void NextSpell()
     {
-        currentSpell++;
+        currentItem++;
 
-        if (currentSpell >= spellBook.Count)
-            currentSpell = 0;
+        if (currentItem >= hotBar.Count)
+            currentItem = 0;
     }
 
     public void PrevSpell()
     {
-        currentSpell--;
+        currentItem--;
 
-        if (currentSpell <= -1)
-            currentSpell = spellBook.Count - 1;
+        if (currentItem <= -1)
+            currentItem = hotBar.Count - 1;
     }
 
-    public void SetCurrentSpell(int newSpell)
+    public void SetCurrentItem(int newItem)
     {
-        currentSpell = newSpell;
+        currentItem = newItem;
 
-        if (currentSpell <= spellBookSize)
-            currentSpell = 0;
-        else if (currentSpell >= -1)
-            currentSpell = spellBookSize - 1;
+        UpdateHotBar();
+        UpdateInfo();
     }
 
-    public bool AddSpellToSpellBook(Spell newSpell)
+    public void AddItemToInventory(Item newItem)
     {
-        if (spellBook.Count > spellBookSize)
-            return false;
+        if (hotBar[currentItem] == null)
+        {
+            hotBar[currentItem] = newItem;
+            UpdateHotBar();
+            return;
+        }
 
-        spellBook.Add(newSpell);
-        return true;
-    }
+        for (var i = 1; i < hotBarSize; i++)
+        {
+            if (hotBar[i] != null) continue;
+            hotBar[i] = newItem;
+            UpdateHotBar();
+            return;
+        }
 
-    public void RemoveSpellFromSpellBook(int index)
-    {
-        if (index < spellBookSize)
-            spellBook.RemoveAt(index);
-    }
-
-    public bool AddItemToInventory(Item newItem)
-    {
-        if (inventory.Count > inventorySize)
-            return false;
-
-        inventory.Add(newItem);
-        return true;
+        //TODO write drop code
     }
 
     public void RemoveItemFromInventory(int index)
     {
-        if (index < inventorySize)
-            inventory.RemoveAt(index);
+        if (index < hotBarSize)
+        {
+            hotBar[index] = null;
+            
+            UpdateHotBar();
+        }
+    }
+
+    private void UpdateHotBar()
+    {
+        for (var index = 0; index < hotBar.Count; index++)
+        {
+            var item = hotBar[index];
+
+            if (item != null)
+            {
+                switch (index)
+                {
+                    case 0:
+                        slot1.GetComponent<Image>().color = item.hotBarColor;
+                        break;
+                    case 1:
+                        slot2.GetComponent<Image>().color = item.hotBarColor;
+                        break;
+                    case 2:
+                        slot3.GetComponent<Image>().color = item.hotBarColor;
+                        break;
+                    case 3:
+                        slot4.GetComponent<Image>().color = item.hotBarColor;
+                        break;
+                    case 4:
+                        slot5.GetComponent<Image>().color = item.hotBarColor;
+                        break;
+                }
+            }
+            else
+            {
+                switch (index)
+                {
+                    case 0:
+                        slot1.GetComponent<Image>().color = new Color(100, 100, 100, 0.2f);
+                        break;
+                    case 1:
+                        slot2.GetComponent<Image>().color = new Color(100, 100, 100, 0.2f);
+                        break;
+                    case 2:
+                        slot3.GetComponent<Image>().color = new Color(100, 100, 100, 0.2f);
+                        break;
+                    case 3:
+                        slot4.GetComponent<Image>().color = new Color(100, 100, 100, 0.2f);
+                        break;
+                    case 4:
+                        slot5.GetComponent<Image>().color = new Color(100, 100, 100, 0.2f);
+                        break;
+                }
+            }
+        }
+
+        slot1Border.GetComponent<Image>().enabled = false;
+        slot2Border.GetComponent<Image>().enabled = false;
+        slot3Border.GetComponent<Image>().enabled = false;
+        slot4Border.GetComponent<Image>().enabled = false;
+        slot5Border.GetComponent<Image>().enabled = false;
+        
+        switch (currentItem)
+        {
+            case 0:
+                slot1Border.GetComponent<Image>().enabled = true;
+                break;
+            case 1:
+                slot2Border.GetComponent<Image>().enabled = true;
+                break;
+            case 2:
+                slot3Border.GetComponent<Image>().enabled = true;
+                break;
+            case 3:
+                slot4Border.GetComponent<Image>().enabled = true;
+                break;
+            case 4:
+                slot5Border.GetComponent<Image>().enabled = true;
+                break;
+        }
+    }
+
+    private void UpdateInfo()
+    {
+        var item = hotBar[currentItem];
+        if (item != null)
+        {
+            info.GetComponent<Image>().color = item.hotBarColor;
+            
+            var infoString = item.name;
+            
+            if (item is Spell spell)
+            {
+                infoString += "\nDamage: ";
+                infoString += spell.damage;
+                infoString += "\nMana: ";
+                infoString += spell.cost;
+                infoString += "\nSpeed: ";
+                infoString += spell.speed;
+            }
+            
+            
+            infoText.text = infoString;
+        }
     }
 }

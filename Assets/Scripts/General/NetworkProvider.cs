@@ -2,6 +2,7 @@
 using BeardedManStudios.Forge.Networking.Unity;
 using UnityEngine;
 using System;
+using UnityEditor;
 using UnityEngine.SceneManagement;
 
 public class NetworkProvider : MonoBehaviour
@@ -10,7 +11,6 @@ public class NetworkProvider : MonoBehaviour
     public bool debug = true;
     public string ip = "127.0.0.1";
     public ushort port = 15937;
-
     private NetworkManager mgr;
     public GameObject networkManager;
 

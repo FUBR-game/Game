@@ -2,18 +2,19 @@
 
 [RequireComponent(typeof(Rigidbody))]
 [RequireComponent(typeof(SphereCollider))]
-public class Spell : MonoBehaviour, Item
+public class Spell : Item
 {
     public int damage = 100;
-    public float speed = 1.0f;
+    public float speed = 100;
     public int cost = 100;
+    public float timeOut = 1000;
     public int lifeTime = 100;
 
     public ParticleSystem[] particleSystems;
 
-    private new Rigidbody rigidbody;
+    protected new Rigidbody rigidbody;
 
-    private bool hasWorked = false;
+    protected bool hasWorked = false;
 
     public void Awake()
     {
@@ -23,14 +24,18 @@ public class Spell : MonoBehaviour, Item
             particleSystem.Play();
         }
 
-
         Destroy(gameObject, lifeTime);
+    }
+
+    public void CalcCost()
+    {
+        cost = (int) (damage + speed / 2) / 10;
     }
 
     public void OnCollisionEnter(Collision collision)
     {
         if (hasWorked) return;
-        
+
         hasWorked = true;
         CollisionEffect(collision);
     }
@@ -39,7 +44,7 @@ public class Spell : MonoBehaviour, Item
     {
         if (collision.gameObject.GetComponent<DamageAble>() != null)
         {
-            collision.gameObject.GetComponent<DamageAble>().takeDamage(damage);
+            collision.gameObject.GetComponent<DamageAble>().TakeDamage(damage);
         }
 
         rigidbody.velocity = Vector3.zero;

@@ -3,18 +3,22 @@ using System.Collections.Generic;
 using System;
 using UnityEngine;
 using Assets.Scripts;
+using BeardedManStudios.Forge.Networking;
+using BeardedManStudios.Forge.Networking.Generated;
+using BeardedManStudios.Forge.Networking.Unity;
 
-public class DungeonGenerator : MonoBehaviour
+public class DungeonGenerator : DungeonGeneratorBehavior
 {
     [Range(0.0f, 0.25f)] public float maxSplitOffset;
     [Range(0, 10)] public int splitDepth;
     public int levelWidth;
     public int levelHeight;
 
-    public List<Loot> loot;
-
-    public int seed = 0;
-    public bool generateNewOnPlay;
+    public List<Vector2> PlayerSpawnPoints;
+    
+    public Loot lootBox;
+    
+    public int seed;
 
     // Lower = more randomness, higher = less randomless, more fairness
     [Range(0.0f, 1.0f)] public float minRoomRatio;
@@ -32,28 +36,37 @@ public class DungeonGenerator : MonoBehaviour
     Assets.BlockGrid grid;
     LevelSplit[] splits;
 
-    private void Start()
+    private SpellManager spellManager;
+
+    public void Start()
     {
-        GenerateWorld();
+        spellManager = GameObject.Find("SpellManager").GetComponent<SpellManager>();
     }
 
-    public void GenerateWorld()
+    public void CallGenerate(int seed)
     {
-        if (generateNewOnPlay) seed = Environment.TickCount;
+        // networkObject.SendRpc(RPC_GENERATE_WORLD, Receivers.All, seed);
 
-        grid = new Assets.BlockGrid(levelWidth, levelHeight, new Vector2((destroyableWallBlock.transform.localScale.x * levelWidth), (destroyableWallBlock.transform.localScale.z * levelHeight)));
+        UnityEngine.Random.InitState(seed);
+
+        grid = new Assets.BlockGrid(levelWidth, levelHeight,
+            new Vector2((destroyableWallBlock.transform.localScale.x * levelWidth),
+                (destroyableWallBlock.transform.localScale.z * levelHeight)));
 
         splits = SplitLevels();
 
-        if (buildBlocks) {
+        if (buildBlocks)
+        {
             BuildBlocks(splits);
+            MakePlayerSpawns(splits);
             SpawnLoot(splits);
         }
     }
-    
+
     private LevelSplit[] SplitLevels()
     {
-        LevelSplit[] splits = new LevelSplit[] { new LevelSplit { start = new Vector2Int(0, 0), delta = new Vector2Int(levelWidth, levelHeight) } };
+        LevelSplit[] splits = new LevelSplit[]
+            {new LevelSplit {start = new Vector2Int(0, 0), delta = new Vector2Int(levelWidth, levelHeight)}};
         for (int splitLevel = 1; splitLevel <= splitDepth; splitLevel++)
         {
             int newSplitNo = splits.Length * 2;
@@ -74,7 +87,9 @@ public class DungeonGenerator : MonoBehaviour
                 {
                     splitRange = Mathf.RoundToInt(split.delta.y * maxSplitOffset);
                 }
-                LevelSplit[] newSplit = SplitLevel(split, UnityEngine.Random.Range(-splitRange, splitRange), splitHorizontal);
+
+                LevelSplit[] newSplit = SplitLevel(split, UnityEngine.Random.Range(-splitRange, splitRange),
+                    splitHorizontal);
                 newSplits[currentIndex] = newSplit[0];
                 currentIndex++;
                 newSplits[currentIndex] = newSplit[1];
@@ -83,6 +98,7 @@ public class DungeonGenerator : MonoBehaviour
 
             splits = newSplits;
         }
+
         return splits;
     }
 
@@ -94,7 +110,6 @@ public class DungeonGenerator : MonoBehaviour
 
     private void BuildBlocks(LevelSplit[] splits)
     {
-
         foreach (LevelSplit split in splits)
         {
             int maxHorOffSet = maxWallOffset;
@@ -116,13 +131,15 @@ public class DungeonGenerator : MonoBehaviour
                     Vector2 gridPos = grid.GridPosToRealPos(new Vector2Int(coordX, coordY));
                     GameObject cube;
 
-                    if (coordX == 0 || coordY == 0 || coordX == levelWidth - 1 || coordY == levelHeight - 1) // edge wall
+                    if (coordX == 0 || coordY == 0 || coordX == levelWidth - 1 || coordY == levelHeight - 1
+                    ) // edge wall
                     {
                         cube = Instantiate(invincibleWallBlock, transform);
                         cube.transform.localPosition = new Vector3(gridPos.x, 4, gridPos.y);
                     }
 
-                    else if (x <= topOffset || split.delta.x - x <= bottomOffset || y <= leftOffset || split.delta.y - y <= rightOffset) // wall
+                    else if (x <= topOffset || split.delta.x - x <= bottomOffset || y <= leftOffset ||
+                             split.delta.y - y <= rightOffset) // wall
                     {
                         cube = Instantiate(destroyableWallBlock, transform);
                         cube.transform.localPosition = new Vector3(gridPos.x, 4, gridPos.y);
@@ -143,52 +160,61 @@ public class DungeonGenerator : MonoBehaviour
             var postTaken = new List<Vector2Int>();
 
             if (size >= 120)
-            {
                 numLoot++;
-            }
             if (size >= 80)
-            {
                 numLoot++;
-            }
             if (size >= 50)
-            {
                 numLoot++;
-            }
             if (size >= 35)
-            {
                 numLoot++;
-            } 
             if (size >= 20)
-            {
                 numLoot++;
-            }
             if (size >= 8)
-            {
                 numLoot++;
-            }
-            if (UnityEngine.Random.value > 0.8f)
-            {
-                numLoot++;
-            }
 
-            for(int i = 0; i < numLoot; i++)
+            if (UnityEngine.Random.value > 0.8f)
+                numLoot++;
+
+            for (int i = 0; i < numLoot; i++)
             {
                 retryLoot:
-                var lootX = (int)Mathf.Lerp(1, split.delta.x-1, UnityEngine.Random.value);
-                var lootY = (int)Mathf.Lerp(1, split.delta.y-1, UnityEngine.Random.value);
+                var lootX = (int) Mathf.Lerp(1, split.delta.x - 1, UnityEngine.Random.value);
+                var lootY = (int) Mathf.Lerp(1, split.delta.y - 1, UnityEngine.Random.value);
                 var lootVector = new Vector2Int(lootX, lootY);
 
                 if (!postTaken.Contains(lootVector))
                 {
-                    var lootCoords = grid.GridPosToRealPos(new Vector2Int(split.start.x + lootX, split.start.y + lootY));
-                    var lootObject = Instantiate(loot[0], new Vector3(lootCoords.x, 1, lootCoords.y), new Quaternion());
+                    var lootCoords =
+                        grid.GridPosToRealPos(new Vector2Int(split.start.x + lootX, split.start.y + lootY));
+                    var lootObject = Instantiate(lootBox, new Vector3(lootCoords.x, 1, lootCoords.y), new Quaternion());
                     postTaken.Add(lootVector);
+
+                    lootObject.item = spellManager.getNewSpell();
                 }
                 else goto retryLoot;
             }
         }
     }
 
+    private void MakePlayerSpawns(LevelSplit[] splits)
+    {
+        foreach (LevelSplit split in splits)
+        {
+            var size = (split.delta.x - 2) * (split.delta.y - 2);
+
+            if (size <= 16)
+            {
+                continue;
+            }
+
+            var spawnX = (int) Mathf.Lerp(1, split.delta.x - 1, UnityEngine.Random.value);
+            var spawnY = (int) Mathf.Lerp(1, split.delta.y - 1, UnityEngine.Random.value);
+            var spawnVector = new Vector2Int(spawnX, spawnY);
+            var spawnCoords = grid.GridPosToRealPos(new Vector2Int(split.start.x + spawnX, split.start.y + spawnY));
+            PlayerSpawnPoints.Add(spawnCoords);
+        }
+
+    }
 
     private LevelSplit[] SplitLevel(LevelSplit levelSplit, int splitOffset, bool horizontal)
     {
@@ -197,14 +223,24 @@ public class DungeonGenerator : MonoBehaviour
         if (horizontal) // Horizontal split (so in width/x)
         {
             int newWidth = Mathf.RoundToInt(levelSplit.delta.x / 2) + splitOffset;
-            splitResult[0] = new LevelSplit { start = levelSplit.start, delta = new Vector2Int(newWidth, levelSplit.delta.y) };
-            splitResult[1] = new LevelSplit { start = new Vector2Int(levelSplit.start.x + newWidth, levelSplit.start.y), delta = new Vector2Int(levelSplit.delta.x - newWidth, levelSplit.delta.y) };
+            splitResult[0] = new LevelSplit
+                {start = levelSplit.start, delta = new Vector2Int(newWidth, levelSplit.delta.y)};
+            splitResult[1] = new LevelSplit
+            {
+                start = new Vector2Int(levelSplit.start.x + newWidth, levelSplit.start.y),
+                delta = new Vector2Int(levelSplit.delta.x - newWidth, levelSplit.delta.y)
+            };
         }
         else // Vertical split (so in height/y)
         {
             int newHeigth = Mathf.RoundToInt(levelSplit.delta.y / 2) + splitOffset;
-            splitResult[0] = new LevelSplit { start = levelSplit.start, delta = new Vector2Int(levelSplit.delta.x, newHeigth) };
-            splitResult[1] = new LevelSplit { start = new Vector2Int(levelSplit.start.x, levelSplit.start.y + newHeigth), delta = new Vector2Int(levelSplit.delta.x, levelSplit.delta.y - newHeigth) };
+            splitResult[0] = new LevelSplit
+                {start = levelSplit.start, delta = new Vector2Int(levelSplit.delta.x, newHeigth)};
+            splitResult[1] = new LevelSplit
+            {
+                start = new Vector2Int(levelSplit.start.x, levelSplit.start.y + newHeigth),
+                delta = new Vector2Int(levelSplit.delta.x, levelSplit.delta.y - newHeigth)
+            };
         }
 
         return splitResult;
@@ -221,5 +257,26 @@ public class DungeonGenerator : MonoBehaviour
             return true;
         }
         else return UnityEngine.Random.Range(0, 2) == 1;
+    }
+
+    //RCP
+    public override void GenerateWorld(RpcArgs args)
+    {
+        MainThreadManager.Run(() =>
+        {
+            UnityEngine.Random.InitState(args.GetNext<int>());
+
+            grid = new Assets.BlockGrid(levelWidth, levelHeight,
+                new Vector2((destroyableWallBlock.transform.localScale.x * levelWidth),
+                    (destroyableWallBlock.transform.localScale.z * levelHeight)));
+
+            splits = SplitLevels();
+
+            if (buildBlocks)
+            {
+                BuildBlocks(splits);
+                SpawnLoot(splits);
+            }
+        });
     }
 }

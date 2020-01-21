@@ -27,6 +27,10 @@ namespace BeardedManStudios.Forge.Networking.Generated
 						availableCallback = true;
 						obj = new ChatManagerNetworkObject(networker, id, frame);
 						break;
+					case DungeonGeneratorNetworkObject.IDENTITY:
+						availableCallback = true;
+						obj = new DungeonGeneratorNetworkObject(networker, id, frame);
+						break;
 					case GameManagerNetworkObject.IDENTITY:
 						availableCallback = true;
 						obj = new GameManagerNetworkObject(networker, id, frame);
@@ -39,13 +43,13 @@ namespace BeardedManStudios.Forge.Networking.Generated
 						availableCallback = true;
 						obj = new PlayerControllerNetworkObject(networker, id, frame);
 						break;
-					case TestNetworkObject.IDENTITY:
-						availableCallback = true;
-						obj = new TestNetworkObject(networker, id, frame);
-						break;
 					case SpellSpawnPointNetworkObject.IDENTITY:
 						availableCallback = true;
 						obj = new SpellSpawnPointNetworkObject(networker, id, frame);
+						break;
+					case TestNetworkObject.IDENTITY:
+						availableCallback = true;
+						obj = new TestNetworkObject(networker, id, frame);
 						break;
 				}
 

@@ -39,8 +39,9 @@ Light:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 2571541074863630243}
   m_Enabled: 1
-  serializedVersion: 9
+  serializedVersion: 10
   m_Type: 2
+  m_Shape: 0
   m_Color: {r: 0.09874722, g: 0.9607843, b: 0, a: 1}
   m_Intensity: 1
   m_Range: 10
@@ -4796,6 +4797,7 @@ ParticleSystemRenderer:
   m_MotionVectors: 1
   m_LightProbeUsage: 0
   m_ReflectionProbeUsage: 0
+  m_RayTracingMode: 0
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
@@ -4855,7 +4857,7 @@ GameObject:
   - component: {fileID: 2571541075826288568}
   - component: {fileID: 1815384719825426137}
   - component: {fileID: 6862099002214513066}
-  - component: {fileID: 2639115589763917283}
+  - component: {fileID: 4795874595403748404}
   m_Layer: 0
   m_Name: Heal spell
   m_TagString: Untagged
@@ -4908,7 +4910,7 @@ SphereCollider:
   serializedVersion: 2
   m_Radius: 0.1
   m_Center: {x: 0, y: 0, z: 0}
---- !u!114 &2639115589763917283
+--- !u!114 &4795874595403748404
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -4917,12 +4919,15 @@ MonoBehaviour:
   m_GameObject: {fileID: 2571541075826288571}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: aaebdf587fc29304eabd70d85d1a205a, type: 3}
+  m_Script: {fileID: 11500000, guid: b097a7b18f75f214ebd8c6cbffc660ad, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  damage: -100
-  speed: -1000
+  index: 0
+  name: Heal spell
+  hotBarColor: {r: 0, g: 0.93333334, b: 0.4493521, a: 0.39215687}
+  damage: 100
+  speed: 100
   cost: 100
-  lifeTime: 10
-  particleSystems:
-  - {fileID: 2571541075250048903}
+  timeOut: 1000
+  lifeTime: 1000000000
+  particleSystems: []

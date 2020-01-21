@@ -76,10 +76,14 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: aaebdf587fc29304eabd70d85d1a205a, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  damage: 100
-  speed: 700
-  cost: 100
-  lifeTime: 100
+  index: 102
+  name: Posion spell
+  hotBarColor: {r: 0.6126871, g: 0, b: 1, a: 0.39215687}
+  damage: 890
+  speed: 885
+  cost: 626
+  timeOut: 6260
+  lifeTime: 1000000000
   particleSystems:
   - {fileID: 6916476088013066997}
 --- !u!1 &6916476088013066987
@@ -4787,6 +4791,7 @@ ParticleSystemRenderer:
   m_MotionVectors: 1
   m_LightProbeUsage: 0
   m_ReflectionProbeUsage: 0
+  m_RayTracingMode: 0
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
@@ -4874,8 +4879,9 @@ Light:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 6916476088433040081}
   m_Enabled: 1
-  serializedVersion: 9
+  serializedVersion: 10
   m_Type: 2
+  m_Shape: 0
   m_Color: {r: 0.33696896, g: 0, b: 0.9607843, a: 1}
   m_Intensity: 1
   m_Range: 10
