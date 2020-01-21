@@ -130,6 +130,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   health: 1000
+  isDead: 0
   mana: 1000
   spellSpawnPoint: {fileID: 5003567839119429889}
   playerCamera: {fileID: 4208522083153448327}
@@ -137,12 +138,14 @@ MonoBehaviour:
   sprintSpeed: 10
   gravity: 9.8
   jumpHeight: 5
+  interactionRange: 3
   sensitivityX: 5
   sensitivityY: 5
   minimumX: -360
   maximumX: 360
   minimumY: -80
   maximumY: 90
+  lootBox: {fileID: 3783217806080052836, guid: 2edb45c7813166747993ca0178052a6f, type: 3}
 --- !u!114 &4208522082954336514
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -155,14 +158,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 83f50deac0f04664d8d6f67dc77c35a5, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  inventorySize: 12
-  spellBookSize: 4
-  currentSpell: 1
-  spellBook:
-  - {fileID: 3970534944187685254, guid: afba46b1f5d3b6d42afb3fd3074821e8, type: 3}
-  - {fileID: 2552753990339921457, guid: 39c3dae6d3b421d4d9098ec8ad2f9002, type: 3}
-  - {fileID: 6409665730593724561, guid: 82955ce51bf9603459b5e3a5baffa54b, type: 3}
-  - {fileID: 2639115589763917283, guid: 25ef35d42b3d37647a729a45b49eec9e, type: 3}
+  hotBarSize: 5
+  currentItem: 0
+  hotBar: []
 --- !u!1 &4208522083153448325
 GameObject:
   m_ObjectHideFlags: 0

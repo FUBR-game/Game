@@ -79,7 +79,7 @@ public class NetworkProvider : MonoBehaviour
                 ((UDPServer)server).Connect(ip, port);
                 break;
             }
-            catch(FailedBindingException ignored)
+            catch(FailedBindingException)
             {
                 port++;
             }

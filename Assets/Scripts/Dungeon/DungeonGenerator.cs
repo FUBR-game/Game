@@ -17,6 +17,7 @@ public class DungeonGenerator : DungeonGeneratorBehavior
     public List<Vector2> PlayerSpawnPoints;
     
     public Loot lootBox;
+    public List<Loot> lootList;
     
     public int seed;
 
@@ -45,8 +46,6 @@ public class DungeonGenerator : DungeonGeneratorBehavior
 
     public void CallGenerate(int seed)
     {
-        // networkObject.SendRpc(RPC_GENERATE_WORLD, Receivers.All, seed);
-
         UnityEngine.Random.InitState(seed);
 
         grid = new Assets.BlockGrid(levelWidth, levelHeight,
@@ -190,6 +189,9 @@ public class DungeonGenerator : DungeonGeneratorBehavior
                     postTaken.Add(lootVector);
 
                     lootObject.item = spellManager.getNewSpell();
+                    lootObject.index = lootList.Count;
+                    
+                    lootList.Add(lootObject);
                 }
                 else goto retryLoot;
             }

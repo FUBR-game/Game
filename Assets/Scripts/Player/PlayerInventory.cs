@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Xml.Schema;
+using Assets.Scripts;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -48,10 +49,10 @@ public class PlayerInventory : MonoBehaviour
 
         info = GameObject.Find("Info").GetComponent<RectTransform>();
         infoText = info.Find("InfoText").GetComponent<Text>();
-        
+
         for (var i = 0; i < hotBarSize; i++)
             hotBar.Add(null);
-        
+
         UpdateHotBar();
         UpdateInfo();
     }
@@ -105,7 +106,6 @@ public class PlayerInventory : MonoBehaviour
         if (index < hotBarSize)
         {
             hotBar[index] = null;
-            
             UpdateHotBar();
         }
     }
@@ -165,7 +165,7 @@ public class PlayerInventory : MonoBehaviour
         slot3Border.GetComponent<Image>().enabled = false;
         slot4Border.GetComponent<Image>().enabled = false;
         slot5Border.GetComponent<Image>().enabled = false;
-        
+
         switch (currentItem)
         {
             case 0:
@@ -192,9 +192,9 @@ public class PlayerInventory : MonoBehaviour
         if (item != null)
         {
             info.GetComponent<Image>().color = item.hotBarColor;
-            
-            var infoString = item.name;
-            
+
+            var infoString = item.itemName;
+
             if (item is Spell spell)
             {
                 infoString += "\nDamage: ";
@@ -204,8 +204,8 @@ public class PlayerInventory : MonoBehaviour
                 infoString += "\nSpeed: ";
                 infoString += spell.speed;
             }
-            
-            
+
+
             infoText.text = infoString;
         }
     }

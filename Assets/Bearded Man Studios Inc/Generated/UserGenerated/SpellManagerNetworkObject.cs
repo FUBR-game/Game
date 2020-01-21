@@ -6,9 +6,9 @@ using UnityEngine;
 namespace BeardedManStudios.Forge.Networking.Generated
 {
 	[GeneratedInterpol("{\"inter\":[]")]
-	public partial class GameManagerNetworkObject : NetworkObject
+	public partial class SpellManagerNetworkObject : NetworkObject
 	{
-		public const int IDENTITY = 3;
+		public const int IDENTITY = 8;
 
 		private byte[] _dirtyFields = new byte[0];
 
@@ -75,9 +75,9 @@ namespace BeardedManStudios.Forge.Networking.Generated
 
 		}
 
-		public GameManagerNetworkObject() : base() { Initialize(); }
-		public GameManagerNetworkObject(NetWorker networker, INetworkBehavior networkBehavior = null, int createCode = 0, byte[] metadata = null) : base(networker, networkBehavior, createCode, metadata) { Initialize(); }
-		public GameManagerNetworkObject(NetWorker networker, uint serverId, FrameStream frame) : base(networker, serverId, frame) { Initialize(); }
+		public SpellManagerNetworkObject() : base() { Initialize(); }
+		public SpellManagerNetworkObject(NetWorker networker, INetworkBehavior networkBehavior = null, int createCode = 0, byte[] metadata = null) : base(networker, networkBehavior, createCode, metadata) { Initialize(); }
+		public SpellManagerNetworkObject(NetWorker networker, uint serverId, FrameStream frame) : base(networker, serverId, frame) { Initialize(); }
 
 		// DO NOT TOUCH, THIS GETS GENERATED PLEASE EXTEND THIS CLASS IF YOU WISH TO HAVE CUSTOM CODE ADDITIONS
 	}

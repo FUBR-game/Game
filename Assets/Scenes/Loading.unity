@@ -410,7 +410,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   isServer: 1
-  debug: 0
+  debug: 1
   ip: 127.0.0.1
   port: 57343
   apiIp: 62.210.180.72

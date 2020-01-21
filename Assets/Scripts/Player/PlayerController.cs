@@ -36,9 +36,12 @@ public class PlayerController : PlayerControllerBehavior, DamageAble
     public float minimumY = -60f;
     public float maximumY = 60f;
 
+    public Loot lootBox;
+    
     private LogHandler _logger;
 
     private SpellManager spellManager;
+    private DungeonGenerator dungeonGenerator;
     private PlayerInventory inventory;
 
     private bool canMove = true;
@@ -68,6 +71,7 @@ public class PlayerController : PlayerControllerBehavior, DamageAble
     {
         _logger = LogHandler.Instance;
         spellManager = GameObject.Find("SpellManager").GetComponent<SpellManager>();
+        dungeonGenerator = GameObject.Find("Dungeon").GetComponent<DungeonGenerator>();
         controller = GetComponent<CharacterController>();
         inventory = GetComponent<PlayerInventory>();
 
@@ -236,6 +240,19 @@ public class PlayerController : PlayerControllerBehavior, DamageAble
                 {
                     inventory.AddItemToInventory(spellManager.getSpell(loot.item));
                 }
+                
+                networkObject.SendRpc(RPC_PICKUP_SPELL, Receivers.All, loot.index);
+            }
+        }
+
+        if (Input.GetKeyDown(KeyCode.Q))
+        {
+            if (inventory.hotBar[inventory.currentItem] != null)
+            {
+                networkObject.SendRpc(RPC_PLACE_SPELL, Receivers.All, transform.position,
+                    inventory.hotBar[inventory.currentItem].index);
+
+                inventory.RemoveItemFromInventory(inventory.currentItem);
             }
         }
     }
@@ -323,6 +340,20 @@ public class PlayerController : PlayerControllerBehavior, DamageAble
     public override void Die(RpcArgs args)
     {
         isDead = true;
+    }
+
+    public override void PickupSpell(RpcArgs args)
+    {
+        var loot = dungeonGenerator.lootList[args.GetNext<int>()];
+        Destroy(loot.gameObject);
+    }
+
+    public override void PlaceSpell(RpcArgs args)
+    {
+        var lootObject = Instantiate(lootBox, args.GetNext<Vector3>(), Quaternion.identity);
+        lootObject.index = dungeonGenerator.lootList.Count;
+        dungeonGenerator.lootList.Add(lootObject);
+        lootObject.item = args.GetNext<int>();
     }
 
     //IDamageAble
