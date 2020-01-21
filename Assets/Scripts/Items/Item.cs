@@ -1,7 +1,4 @@
-﻿using System.Collections;
-using System.Collections.Generic;
-using System.Security.Policy;
-using Assets.Scripts;
+﻿using Assets.Scripts;
 using UnityEngine;
 
 public abstract class Item : MonoBehaviour

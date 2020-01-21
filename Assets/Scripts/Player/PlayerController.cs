@@ -83,11 +83,11 @@ public class PlayerController : PlayerControllerBehavior, DamageAble
         manaBar = manaBarBack.Find("ManaBarFront").GetComponent<RectTransform>();
         manaText = manaBarBack.Find("ManaBarText").GetComponent<Text>();
 
-        quit = GameObject.Find("Quit").GetComponent<Button>(); 
-        quitText = GameObject.Find("QuitText").GetComponent<Text>();
+        //quit = GameObject.Find("Quit").GetComponent<Button>(); 
+        //quitText = GameObject.Find("QuitText").GetComponent<Text>();
         
-        quit.gameObject.SetActive(false);
-        quitText.gameObject.SetActive(false);
+        //quit.gameObject.SetActive(false);
+        //quitText.gameObject.SetActive(false);
     }
 
     protected override void NetworkStart()
@@ -223,6 +223,19 @@ public class PlayerController : PlayerControllerBehavior, DamageAble
             inventory.SetCurrentItem(4);
         }
 
+        var scroll = Input.GetAxis("Mouse ScrollWheel");
+        if (scroll < -0.1)
+        {
+            var nextItem = (inventory.currentItem + 1) % inventory.hotBarSize;
+            inventory.SetCurrentItem(nextItem);
+        }
+        else if (scroll > 0.1)
+        {
+            var prevItem = (inventory.currentItem - 1) % inventory.hotBarSize;
+            if (prevItem < 0) prevItem = inventory.hotBarSize - 1;
+            inventory.SetCurrentItem(prevItem);
+        }
+
         if (Input.GetKeyDown(KeyCode.E))
         {
             Vector3 rayOrigin = playerCamera.ViewportToWorldPoint(new Vector3(0.5f, 0.5f, 0.0f));
@@ -238,6 +251,7 @@ public class PlayerController : PlayerControllerBehavior, DamageAble
                 }
             }
         }
+
     }
 
     private static float ClampAngle(float angle, float min, float max)
