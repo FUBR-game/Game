@@ -410,9 +410,11 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   isServer: 1
-  debug: 1
+  debug: 0
   ip: 127.0.0.1
   port: 57343
+  apiIp: 62.210.180.72
+  apiPort: 61683
   networkManager: {fileID: 186558, guid: 79adc0da5b6caf74990d862696696ecd, type: 3}
   maxPlayers: 10
 --- !u!4 &1675055276

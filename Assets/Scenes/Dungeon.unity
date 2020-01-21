@@ -1060,5 +1060,20 @@ PrefabInstance:
       value: 
       objectReference: {fileID: 3783217806080052836, guid: 2edb45c7813166747993ca0178052a6f,
         type: 3}
+    - target: {fileID: 4762396756503674684, guid: 371ed70a52453314589b6e4dd25b8684,
+        type: 3}
+      propertyPath: visualize
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4762396756503674684, guid: 371ed70a52453314589b6e4dd25b8684,
+        type: 3}
+      propertyPath: buildBlocks
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 4762396756503674684, guid: 371ed70a52453314589b6e4dd25b8684,
+        type: 3}
+      propertyPath: generateNewOnPlay
+      value: 0
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 371ed70a52453314589b6e4dd25b8684, type: 3}
