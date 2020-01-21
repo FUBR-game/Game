@@ -4,14 +4,12 @@ using UnityEngine;
 
 namespace BeardedManStudios.Forge.Networking.Generated
 {
-	[GeneratedRPC("{\"types\":[[][]]")]
-	[GeneratedRPCVariableNames("{\"types\":[[][]]")]
-	public abstract partial class PlayerControllerBehavior : NetworkBehavior
+	[GeneratedRPC("{\"types\":[]")]
+	[GeneratedRPCVariableNames("{\"types\":[]")]
+	public abstract partial class SpellSpawnPointBehavior : NetworkBehavior
 	{
-		public const byte RPC_CAST_SPELL = 0 + 5;
-		public const byte RPC_DIE = 1 + 5;
 		
-		public PlayerControllerNetworkObject networkObject = null;
+		public SpellSpawnPointNetworkObject networkObject = null;
 
 		public override void Initialize(NetworkObject obj)
 		{
@@ -19,12 +17,10 @@ namespace BeardedManStudios.Forge.Networking.Generated
 			if (networkObject != null && networkObject.AttachedBehavior != null)
 				return;
 			
-			networkObject = (PlayerControllerNetworkObject)obj;
+			networkObject = (SpellSpawnPointNetworkObject)obj;
 			networkObject.AttachedBehavior = this;
 
 			base.SetupHelperRpcs(networkObject);
-			networkObject.RegisterRpc("CastSpell", CastSpell);
-			networkObject.RegisterRpc("Die", Die);
 
 			networkObject.onDestroy += DestroyGameObject;
 
@@ -82,7 +78,7 @@ namespace BeardedManStudios.Forge.Networking.Generated
 
 		public override void Initialize(NetWorker networker, byte[] metadata = null)
 		{
-			Initialize(new PlayerControllerNetworkObject(networker, createCode: TempAttachCode, metadata: metadata));
+			Initialize(new SpellSpawnPointNetworkObject(networker, createCode: TempAttachCode, metadata: metadata));
 		}
 
 		private void DestroyGameObject(NetWorker sender)
@@ -93,7 +89,7 @@ namespace BeardedManStudios.Forge.Networking.Generated
 
 		public override NetworkObject CreateNetworkObject(NetWorker networker, int createCode, byte[] metadata = null)
 		{
-			return new PlayerControllerNetworkObject(networker, this, createCode, metadata);
+			return new SpellSpawnPointNetworkObject(networker, this, createCode, metadata);
 		}
 
 		protected override void InitializedTransform()
@@ -101,14 +97,6 @@ namespace BeardedManStudios.Forge.Networking.Generated
 			networkObject.SnapInterpolations();
 		}
 
-		/// <summary>
-		/// Arguments:
-		/// </summary>
-		public abstract void CastSpell(RpcArgs args);
-		/// <summary>
-		/// Arguments:
-		/// </summary>
-		public abstract void Die(RpcArgs args);
 
 		// DO NOT TOUCH, THIS GETS GENERATED PLEASE EXTEND THIS CLASS IF YOU WISH TO HAVE CUSTOM CODE ADDITIONS
 	}

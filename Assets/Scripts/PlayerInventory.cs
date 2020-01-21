@@ -14,25 +14,26 @@ public class PlayerInventory : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
+        
     }
 
-    public void nextSpell()
+    public void NextSpell()
     {
         currentSpell++;
 
-        if (currentSpell <= spellBookSize)
+        if (currentSpell >= spellBook.Count)
             currentSpell = 0;
     }
 
-    public void prevSpell()
+    public void PrevSpell()
     {
         currentSpell--;
 
-        if (currentSpell >= -1)
-            currentSpell = spellBookSize - 1;
+        if (currentSpell <= -1)
+            currentSpell = spellBook.Count - 1;
     }
 
-    public void setCurrentSpell(int newSpell)
+    public void SetCurrentSpell(int newSpell)
     {
         currentSpell = newSpell;
 
@@ -42,7 +43,7 @@ public class PlayerInventory : MonoBehaviour
             currentSpell = spellBookSize - 1;
     }
 
-    public bool addSpellToSpellBook(Spell newSpell)
+    public bool AddSpellToSpellBook(Spell newSpell)
     {
         if (spellBook.Count > spellBookSize)
             return false;
@@ -51,13 +52,13 @@ public class PlayerInventory : MonoBehaviour
         return true;
     }
 
-    public void removeSpellFromSpellBook(int index)
+    public void RemoveSpellFromSpellBook(int index)
     {
         if (index < spellBookSize)
             spellBook.RemoveAt(index);
     }
 
-    public bool addItemToInventory(Item newItem)
+    public bool AddItemToInventory(Item newItem)
     {
         if (inventory.Count > inventorySize)
             return false;
@@ -66,7 +67,7 @@ public class PlayerInventory : MonoBehaviour
         return true;
     }
 
-    public void removeItemFromInventory(int index)
+    public void RemoveItemFromInventory(int index)
     {
         if (index < inventorySize)
             inventory.RemoveAt(index);

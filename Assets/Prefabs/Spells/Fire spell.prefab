@@ -12,7 +12,7 @@ GameObject:
   - component: {fileID: 4573462122993750227}
   - component: {fileID: 4041407975196890714}
   m_Layer: 0
-  m_Name: Particle System (1)
+  m_Name: Smoke
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -4766,7 +4766,7 @@ GameObject:
   - component: {fileID: 5029406003435258435}
   - component: {fileID: 913139439427467911}
   m_Layer: 0
-  m_Name: Spell
+  m_Name: Fire spell
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -4780,7 +4780,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 3970534944187685255}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 2.021, z: 0}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children:
   - {fileID: 3970534944495059358}
@@ -4801,10 +4801,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: aaebdf587fc29304eabd70d85d1a205a, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  damage: 100
+  damage: 1000
   speed: 800
   cost: 10
-  lifeTime: 100
+  lifeTime: 50
   particleSystems:
   - {fileID: 3970534944495059352}
   - {fileID: 4573462122993750227}
@@ -4849,7 +4849,7 @@ GameObject:
   - component: {fileID: 3970534944495059352}
   - component: {fileID: 3970534944495059353}
   m_Layer: 0
-  m_Name: Particle System
+  m_Name: Fire
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -9601,7 +9601,7 @@ GameObject:
   - component: {fileID: 3005645255058788683}
   - component: {fileID: 4339628213757361014}
   m_Layer: 0
-  m_Name: Point Light
+  m_Name: Light
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
