@@ -47,16 +47,13 @@ MonoBehaviour:
   splitDepth: 6
   levelWidth: 50
   levelHeight: 50
+  PlayerSpawnPoints: []
+  lootBox: {fileID: 0}
   seed: 0
-  generateNewOnPlay: 1
   minRoomRatio: 0.754
-  visualize: 0
   buildBlocks: 1
-  floorBlock: {fileID: 7681253991083768911, guid: de59938052dc6224cb21769e57423141,
-    type: 3}
   destroyableWallBlock: {fileID: 7681253991083768911, guid: 3f35489cec8db2f44bb9da652538805e,
     type: 3}
-  InvincibleWallBlock: {fileID: 7681253991083768911, guid: 31cef6b4f933d394ba549df93be91599,
-    type: 3}
+  invincibleWallBlock: {fileID: 0}
   maxWallOffset: 0
   roomChance: 0.2

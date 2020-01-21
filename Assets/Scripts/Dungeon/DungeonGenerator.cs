@@ -110,6 +110,18 @@ public class DungeonGenerator : DungeonGeneratorBehavior
 
     private void BuildBlocks(LevelSplit[] splits)
     {
+        var edgeWallWest = Instantiate(invincibleWallBlock);
+        edgeWallWest.transform.position = grid.GridPosToRealPos(new Vector2Int(0, levelHeight / 2));
+
+        var edgeWallEast = Instantiate(invincibleWallBlock);
+        edgeWallEast.transform.position = grid.GridPosToRealPos(new Vector2Int(levelWidth - 1, levelHeight / 2));
+
+        var edgeWallNorth = Instantiate(invincibleWallBlock);
+        edgeWallNorth.transform.position = grid.GridPosToRealPos(new Vector2Int(levelWidth / 2, 0));
+
+        var edgeWallSouth = Instantiate(invincibleWallBlock);
+        edgeWallNorth.transform.position = grid.GridPosToRealPos(new Vector2Int(levelWidth / 2, levelHeight - 1));
+
         foreach (LevelSplit split in splits)
         {
             int maxHorOffSet = maxWallOffset;
@@ -131,20 +143,22 @@ public class DungeonGenerator : DungeonGeneratorBehavior
                     Vector2 gridPos = grid.GridPosToRealPos(new Vector2Int(coordX, coordY));
                     GameObject cube;
 
-                    if (coordX == 0 || coordY == 0 || coordX == levelWidth - 1 || coordY == levelHeight - 1
-                    ) // edge wall
-                    {
-                        cube = Instantiate(invincibleWallBlock, transform);
-                        cube.transform.localPosition = new Vector3(gridPos.x, 4, gridPos.y);
-                    }
+                    //if (coordX == 0 || coordY == 0 || coordX == levelWidth - 1 || coordY == levelHeight - 1) // edge wall
+                    //{
+                    //    cube = Instantiate(invincibleWallBlock, transform);
+                    //    cube.transform.localPosition = new Vector3(gridPos.x, 4, gridPos.y);
+                    //}
 
-                    else if (x <= topOffset || split.delta.x - x <= bottomOffset || y <= leftOffset ||
-                             split.delta.y - y <= rightOffset) // wall
+                    if(gridPos.x != 0 || gridPos.x != levelWidth-1 || gridPos.y != 0 || gridPos.y != levelHeight-1) 
                     {
-                        cube = Instantiate(destroyableWallBlock, transform);
-                        cube.transform.localPosition = new Vector3(gridPos.x, 4, gridPos.y);
+                        if (x <= topOffset || split.delta.x - x <= bottomOffset || y <= leftOffset || split.delta.y - y <= rightOffset) // wall
+                        {
+                            cube = Instantiate(destroyableWallBlock, transform);
+                            cube.transform.localPosition = new Vector3(gridPos.x, 4, gridPos.y);
+                        }
                     }
                 }
+
             }
         }
     }
@@ -190,6 +204,7 @@ public class DungeonGenerator : DungeonGeneratorBehavior
                     postTaken.Add(lootVector);
 
                     lootObject.item = spellManager.getNewSpell();
+                    lootObject.UpdateColor();
                 }
                 else goto retryLoot;
             }

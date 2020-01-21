@@ -4,8 +4,19 @@ using UnityEngine;
 
 public class TestDamagAble : MonoBehaviour, DamageAble
 {
-    public int health = 200;
-    
+    public int maxHealth = 2000;
+    private int health;
+
+    public Gradient healthColor;
+    private Renderer renderer;
+
+    public void Start()
+    {
+        health = maxHealth;
+        renderer = GetComponent<Renderer>();
+        renderer.material.SetColor("_Color", healthColor.Evaluate(1.0f));
+    }
+
     public void TakeDamage(int amount)
     {
         health -= amount;
@@ -13,5 +24,7 @@ public class TestDamagAble : MonoBehaviour, DamageAble
         {
             Destroy(gameObject);
         }
+
+        renderer.material.SetColor("_Color", healthColor.Evaluate((float)health / maxHealth));
     }
 }
