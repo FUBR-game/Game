@@ -61,6 +61,7 @@ public class PlayerController : PlayerControllerBehavior, DamageAble
     private RectTransform manaBarBack;
     private Text manaText;
 
+    private RectTransform deathScreen;
     private Button quit;
     private Text quitText;
 
@@ -83,11 +84,14 @@ public class PlayerController : PlayerControllerBehavior, DamageAble
         manaBar = manaBarBack.Find("ManaBarFront").GetComponent<RectTransform>();
         manaText = manaBarBack.Find("ManaBarText").GetComponent<Text>();
 
-        //quit = GameObject.Find("Quit").GetComponent<Button>(); 
-        //quitText = GameObject.Find("QuitText").GetComponent<Text>();
-        
-        //quit.gameObject.SetActive(false);
-        //quitText.gameObject.SetActive(false);
+        deathScreen = GameObject.Find("DeathScreen").GetComponent<RectTransform>();
+        quit = GameObject.Find("Quit").GetComponent<Button>();
+        quitText = GameObject.Find("QuitText").GetComponent<Text>();
+
+        deathScreen.gameObject.SetActive(false);
+
+        Cursor.lockState = CursorLockMode.Locked;
+        Cursor.visible = false;
     }
 
     protected override void NetworkStart()
@@ -155,12 +159,12 @@ public class PlayerController : PlayerControllerBehavior, DamageAble
                 moveDirection.y += jumpHeight;
             }
         }
-//        else
-//        {
-//            moveDirection.x = Input.GetAxis("Horizontal") * airControl;
-//            moveDirection.z = Input.GetAxis("Vertical") * airControl;
-//            moveDirection = transform.TransformDirection(moveDirection);
-//        }
+        //else
+        //{
+        //    moveDirection.x = Input.GetAxis("Horizontal") * airControl;
+        //    moveDirection.z = Input.GetAxis("Vertical") * airControl;
+        //    moveDirection = transform.TransformDirection(moveDirection);
+        //}
 
         moveDirection.y -= gravity * Time.deltaTime;
 
@@ -272,8 +276,7 @@ public class PlayerController : PlayerControllerBehavior, DamageAble
     {
         if (isDead)
         {
-            quit.gameObject.SetActive(true);
-            quitText.gameObject.SetActive(true);
+            deathScreen.gameObject.SetActive(true);
             
             healthBarBack.gameObject.SetActive(false);
             healthBar.gameObject.SetActive(false);
@@ -282,6 +285,9 @@ public class PlayerController : PlayerControllerBehavior, DamageAble
             manaBarBack.gameObject.SetActive(false);
             manaBar.gameObject.SetActive(false);
             manaText.gameObject.SetActive(false);
+
+            Cursor.lockState = CursorLockMode.None;
+            Cursor.visible = true;
         }
         else
         {
@@ -294,6 +300,7 @@ public class PlayerController : PlayerControllerBehavior, DamageAble
             if (health <= 0)
             {
                 healthText.text = "You're dead!";
+
             }
 
             // Health bar
@@ -345,6 +352,7 @@ public class PlayerController : PlayerControllerBehavior, DamageAble
         if (networkObject.IsOwner)
         {
             health -= amount;
+
             if (health <= 0)
             {
                 networkObject.SendRpc(RPC_DIE, Receivers.Others);

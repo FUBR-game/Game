@@ -36,9 +36,6 @@ public class GameManager : GameManagerBehavior
                 UnityEngine.Random.Range(0, dungeonGenerator.PlayerSpawnPoints.Count)];
 
             NetworkManager.Instance.InstantiatePlayerController(position: new Vector3(position.x, 2, position.y));
-
-            Cursor.lockState = CursorLockMode.Locked;
-            Cursor.visible = false;
         }
     }
 
