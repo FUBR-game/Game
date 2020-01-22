@@ -30,6 +30,8 @@ public class PlayerInventory : MonoBehaviour
     private RectTransform info;
     private Text infoText;
 
+    private Color defaultColor;
+
     public void Start()
     {
         slot1 = GameObject.Find("Slot1").GetComponent<RectTransform>();
@@ -49,6 +51,7 @@ public class PlayerInventory : MonoBehaviour
 
         info = GameObject.Find("Info").GetComponent<RectTransform>();
         infoText = info.Find("InfoText").GetComponent<Text>();
+        defaultColor = GameObject.Find("Info").GetComponent<Image>().color;
 
         for (var i = 0; i < hotBarSize; i++)
             hotBar.Add(null);
@@ -184,6 +187,8 @@ public class PlayerInventory : MonoBehaviour
                 slot5Border.GetComponent<Image>().enabled = true;
                 break;
         }
+
+        UpdateInfo();
     }
 
     private void UpdateInfo()
@@ -192,7 +197,6 @@ public class PlayerInventory : MonoBehaviour
         if (item != null)
         {
             info.GetComponent<Image>().color = item.hotBarColor;
-
             var infoString = item.itemName;
 
             if (item is Spell spell)
@@ -204,9 +208,12 @@ public class PlayerInventory : MonoBehaviour
                 infoString += "\nSpeed: ";
                 infoString += spell.speed;
             }
-
-
             infoText.text = infoString;
+        }
+        else
+        {
+            info.GetComponent<Image>().color = defaultColor;
+            infoText.text = "No spell selected";
         }
     }
 }
