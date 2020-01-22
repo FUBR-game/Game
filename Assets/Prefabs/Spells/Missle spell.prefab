@@ -77,7 +77,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   index: 100
-  name: Missle spell
+  itemName: Missile spell
   hotBarColor: {r: 0, g: 0.47733474, b: 1, a: 0.39215687}
   damage: 447
   speed: 856

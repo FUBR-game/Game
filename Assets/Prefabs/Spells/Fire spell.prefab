@@ -4832,7 +4832,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   index: 104
-  name: Fire spell
+  itemName: Fire spell
   hotBarColor: {r: 1, g: 0.2509411, b: 0, a: 0.39215687}
   damage: 398
   speed: 929
