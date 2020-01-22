@@ -375,6 +375,7 @@ public class PlayerController : PlayerControllerBehavior, DamageAble
         lootObject.index = dungeonGenerator.lootList.Count;
         dungeonGenerator.lootList.Add(lootObject);
         lootObject.item = args.GetNext<int>();
+        lootObject.UpdateColor();
     }
 
     //IDamageAble
