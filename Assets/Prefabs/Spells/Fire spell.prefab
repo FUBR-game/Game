@@ -4831,14 +4831,15 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: aaebdf587fc29304eabd70d85d1a205a, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  index: 104
-  name: Fire spell
+  index: 0
+  itemName: item
   hotBarColor: {r: 1, g: 0.2509411, b: 0, a: 0.39215687}
-  damage: 398
-  speed: 929
-  cost: -93
-  timeOut: -930
+  damage: 100
+  speed: 100
+  cost: 0
+  timeOut: 0
   lifeTime: 1000000000
+  type: -1
   particleSystems:
   - {fileID: 3970534944495059352}
   - {fileID: 4573462122993750227}

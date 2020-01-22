@@ -43,6 +43,10 @@ namespace BeardedManStudios.Forge.Networking.Generated
 						availableCallback = true;
 						obj = new PlayerControllerNetworkObject(networker, id, frame);
 						break;
+					case SpellManagerNetworkObject.IDENTITY:
+						availableCallback = true;
+						obj = new SpellManagerNetworkObject(networker, id, frame);
+						break;
 					case SpellSpawnPointNetworkObject.IDENTITY:
 						availableCallback = true;
 						obj = new SpellSpawnPointNetworkObject(networker, id, frame);
@@ -50,10 +54,6 @@ namespace BeardedManStudios.Forge.Networking.Generated
 					case TestNetworkObject.IDENTITY:
 						availableCallback = true;
 						obj = new TestNetworkObject(networker, id, frame);
-						break;
-					case SpellManagerNetworkObject.IDENTITY:
-						availableCallback = true;
-						obj = new SpellManagerNetworkObject(networker, id, frame);
 						break;
 				}
 

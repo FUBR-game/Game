@@ -76,14 +76,15 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: aaebdf587fc29304eabd70d85d1a205a, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  index: 102
-  name: Posion spell
+  index: 0
+  itemName: item
   hotBarColor: {r: 0.6126871, g: 0, b: 1, a: 0.39215687}
-  damage: 890
-  speed: 885
-  cost: 626
-  timeOut: 6260
+  damage: 100
+  speed: 100
+  cost: 0
+  timeOut: 0
   lifeTime: 1000000000
+  type: -1
   particleSystems:
   - {fileID: 6916476088013066997}
 --- !u!1 &6916476088013066987
