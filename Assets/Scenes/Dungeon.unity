@@ -343,6 +343,7 @@ MonoBehaviour:
   - {fileID: 3970534944187685254, guid: afba46b1f5d3b6d42afb3fd3074821e8, type: 3}
   - {fileID: 6409665730593724561, guid: 82955ce51bf9603459b5e3a5baffa54b, type: 3}
   - {fileID: 2552753990339921457, guid: 39c3dae6d3b421d4d9098ec8ad2f9002, type: 3}
+  - {fileID: 3089549495129752892, guid: d0d306bcfd4350744b522d6be283bff5, type: 3}
   spells: []
   madeSpells: []
   spellSize: 200
