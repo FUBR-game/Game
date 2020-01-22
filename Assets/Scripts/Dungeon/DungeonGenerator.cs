@@ -205,7 +205,7 @@ public class DungeonGenerator : DungeonGeneratorBehavior
                     var lootObject = Instantiate(lootBox, new Vector3(lootCoords.x, 1, lootCoords.y), new Quaternion());
                     postTaken.Add(lootVector);
 
-                    lootObject.item = spellManager.getNewSpell();
+                    lootObject.item = spellManager.getNewSpell(UnityEngine.Random.Range(0, spellManager.madeSpells.Count));
                     lootObject.index = lootList.Count;
                     
                     lootList.Add(lootObject);

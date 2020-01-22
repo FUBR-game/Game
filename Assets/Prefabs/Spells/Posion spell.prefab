@@ -77,14 +77,13 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   index: 0
-  itemName: item
+  itemName: Posion spell
   hotBarColor: {r: 0.6126871, g: 0, b: 1, a: 0.39215687}
   damage: 100
-  speed: 100
+  speed: 400
   cost: 0
   timeOut: 0
-  lifeTime: 1000000000
-  type: -1
+  lifeTime: 1000
   particleSystems:
   - {fileID: 6916476088013066997}
 --- !u!1 &6916476088013066987

@@ -27,29 +27,44 @@ public class SpellManager : SpellManagerBehavior
     public void makeSpells()
     {
         var spellCount = 0;
+        var damageMultiplier = 1;
+        var speedMultiplier = 4;
+        
         for (int i = 0; i < spellSize; i++)
         {
             var spell = Instantiate(basicSpells[spellCount], transform);
 
             spellCount++;
-            
+
             if (spellCount >= basicSpells.Count)
                 spellCount = 0;
 
             spell.transform.position = new Vector3(i, -10, 0);
             spell.lifeTime = 1000000000;
             spell.gameObject.SetActive(false);
+            spell.damage = damageMultiplier * 100;
+            spell.speed = speedMultiplier * 100;
             spell.CalcCost();
 
             madeSpells.Add(spell);
+            
+            if (i % basicSpells.Count == 0)
+            {
+                damageMultiplier++;
+            }
+
+            if (i % (basicSpells.Count * 10) == 0)
+            {
+                speedMultiplier++;
+                damageMultiplier = 1;
+            }
         }
     }
 
-    public int getNewSpell()
+    public int getNewSpell(int number)
     {
-        spells.Add(madeSpells[currentSpell]);
-        currentSpell++;
-        
+        spells.Add(madeSpells[number]);
+
         var index = spells.Count - 1;
 
         spells[index].index = index;
